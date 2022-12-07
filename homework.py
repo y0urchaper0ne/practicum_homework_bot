@@ -6,7 +6,7 @@ import telegram
 import requests
 from http import HTTPStatus
 
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 from exceptions import ServerCodeError
 
 load_dotenv()
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 def send_message(bot, message):
-    """Отправляет статус домашней работы пользователю"""
+    """Отправляет статус домашней работы пользователю."""
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
     except telegram.error.TelegramError as error:
@@ -45,23 +45,22 @@ def send_message(bot, message):
         logger.debug('Статус отправлен в telegram')
 
 
-
 def get_api_answer(current_timestamp):
-    """Получает данные о домашней работы из эндпоинта"""
+    """Получает данные о домашней работы из эндпоинта."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     try:
         response = requests.get(ENDPOINT, headers=HEADERS, params=params)
         if response.status_code != HTTPStatus.OK:
             raise ServerCodeError('Ответ API не был получен')
-        else: 
+        else:
             return response.json()
     except requests.RequestException as error:
         logger.error(f'Данный эндпоинт недоступен: {error}')
 
 
 def check_response(response):
-    """Проверка наличия домашней работы в ответе API"""
+    """Проверка наличия домашней работы в ответе API."""
     # try:
     #     homeworks = response['homeworks']
     # except KeyError as error:
@@ -83,7 +82,7 @@ def check_response(response):
 
 
 def parse_status(homework):
-    """Получение текущего статуса домашней работы"""
+    """Получение текущего статуса домашней работы."""
     try:
         homework_name = homework['homework_name']
     except KeyError:
@@ -98,12 +97,12 @@ def parse_status(homework):
 
 
 def check_tokens():
-    """Проверка доступности необходимых для работы переменных окружения"""
+    """Проверка доступности необходимых для работы переменных окружения."""
     return all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
 
 
 def main():
-    """Описана основная логика работы программы"""
+    """Описана основная логика работы программы."""
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     current_timestamp = int(time.time())
     check = check_tokens()
@@ -124,7 +123,7 @@ def main():
                 message = parse_status(homework[0])
                 send_message(bot, message)
                 logger.info('Сообщение успешно отправлено')
-            current_timestamp = homework.get('current_date',current_timestamp)    
+            current_timestamp = homework.get('current_date', current_timestamp)  
             time.sleep(RETRY_PERIOD)
         except Exception as error:
             logger.critical(f'Сбой отправки сообщения: {error}')
