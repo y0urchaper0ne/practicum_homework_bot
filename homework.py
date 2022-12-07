@@ -123,7 +123,7 @@ def main():
                 message = parse_status(homework[0])
                 send_message(bot, message)
                 logger.info('Сообщение успешно отправлено')
-            current_timestamp = homework.get('current_date', current_timestamp)  
+            current_timestamp = homework.get('current_date', current_timestamp)
             time.sleep(RETRY_PERIOD)
         except Exception as error:
             logger.critical(f'Сбой отправки сообщения: {error}')
