@@ -121,13 +121,11 @@ def main():
             time.sleep(RETRY_PERIOD)
 
 
-
 if __name__ == '__main__':
     logging.basicConfig(
         level=logging.DEBUG,
         handlers=[logging.FileHandler('main.log', 'w', 'utf-8')],
-        format='%(asctime)s, %(levelname)s,'
-            ' %(message)s'
+        format='%(asctime)s, %(levelname)s, %(message)s'
     )
     logger = logging.getLogger(__name__)
     main()
